@@ -25,6 +25,8 @@ import com.example.tutorial.presentation.screen.HomeScreen
 import com.example.tutorial.presentation.screen.admin.CourseAdminScreen
 import com.example.tutorial.presentation.screen.auth.LoginScreen
 import com.example.tutorial.presentation.screen.auth.RegisterScreen
+import com.example.tutorial.presentation.screen.student.StudentCourseScreen
+import com.example.tutorial.presentation.screen.student.StudentScreen
 import com.example.tutorial.presentation.screen.teacher.TeacherCourseScreen
 import com.example.tutorial.presentation.screen.teacher.TeacherScreen
 import com.example.tutorial.presentation.screen.teacher.TeacherTaskScreen
@@ -76,7 +78,7 @@ fun MyApp() {
                 composable("home"){
                     HomeScreen()
                 }
-                composable("admin_home") {
+                composable("admin_screen") {
                     AdminScreen(navController)
                 }
                 composable(
@@ -118,6 +120,16 @@ fun MyApp() {
                     val courseId = backStackEntry.arguments?.getInt("courseId") ?: -1
                     val taskId = backStackEntry.arguments?.getInt("taskId") ?: -1
                     TeacherTaskScreen(navController, courseId, taskId)
+                }
+                composable("student_screen"){
+                    StudentScreen(navController)
+                }
+                composable(
+                    "student_course_screen/{courseId}",
+                    arguments = listOf(navArgument("courseId") { type = NavType.IntType })
+                ) { backStackEntry ->
+                    val courseId = backStackEntry.arguments?.getInt("courseId") ?: -1
+                    StudentCourseScreen(navController, courseId)
                 }
             }
         }

@@ -65,11 +65,11 @@ fun LoginScreen(navController: NavController, modifier: Modifier = Modifier) {
                         onSuccess = {
                             Toast.makeText(context, "Login successful", Toast.LENGTH_SHORT).show()
                             if (SessionManager.getUser()?.role  == Role.ADMIN){
-                                navController.navigate("admin_home")
+                                navController.navigate("admin_screen")
                             }else if (SessionManager.getUser()?.role == Role.TEACHER) {
                                 navController.navigate("teacher_screen")
                             } else{
-                                navController.navigate("home") // или на нужный экран
+                                navController.navigate("student_screen") // или на нужный экран
                             }
                         },
                         onError = { error ->
