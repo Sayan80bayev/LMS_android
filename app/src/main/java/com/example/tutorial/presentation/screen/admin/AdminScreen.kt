@@ -20,7 +20,6 @@ import com.example.tutorial.R
 import com.example.tutorial.data.local.entities.Course
 import com.example.tutorial.presentation.components.AddCourseBottomSheet
 import com.example.tutorial.presentation.viewmodel.AdminViewModel
-import com.example.tutorial.presentation.viewmodel.Factory
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -28,7 +27,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun AdminScreen(navController: NavController) {
     val context = LocalContext.current
-    val viewModel: AdminViewModel = viewModel(factory = Factory(context))
+    val viewModel: AdminViewModel = viewModel(factory = AdminViewModel.Companion.Factory(context))
     val courses by viewModel.courses.collectAsState()
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()

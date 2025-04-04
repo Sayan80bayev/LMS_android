@@ -11,7 +11,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.tutorial.presentation.components.SearchableDropdown
 import com.example.tutorial.presentation.viewmodel.AdminViewModel
-import com.example.tutorial.presentation.viewmodel.Factory
 
 @Composable
 fun CourseAdminScreen(
@@ -19,7 +18,7 @@ fun CourseAdminScreen(
     navController: NavController? = null
 ) {
     val context = LocalContext.current
-    val viewModel: AdminViewModel = viewModel(factory = Factory(context))
+    val viewModel: AdminViewModel = viewModel(factory = AdminViewModel.Companion.Factory(context))
     val courses by viewModel.courses.collectAsState()
     val teachers by viewModel.teachers.collectAsState()
     val students by viewModel.students.collectAsState()

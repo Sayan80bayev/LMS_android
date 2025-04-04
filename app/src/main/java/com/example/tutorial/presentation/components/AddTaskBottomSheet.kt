@@ -2,36 +2,54 @@ package com.example.tutorial.presentation.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun AddTaskBottomSheet(onDismiss: () -> Unit) {
-    // Bottom sheet content to add a new task
+fun AddTaskBottomSheet(
+    onDismiss: () -> Unit,
+    onConfirm: (String) -> Unit
+) {
+    var taskName by remember { mutableStateOf("") }
+
     Column(modifier = Modifier.padding(16.dp)) {
-        Text("Добавить задание", style = MaterialTheme.typography.titleMedium)
+        Text("Add New Task", style = MaterialTheme.typography.titleMedium)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Add task input fields here
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = taskName,
+            onValueChange = { taskName = it },
             label = { Text("Task Name") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
-        Button(
-            onClick = {
-                // Handle task creation logic here
-                onDismiss()
-            },
-            modifier = Modifier.fillMaxWidth()
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
         ) {
-            Text("Создать задание")
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.padding(end = 8.dp)
+            ) {
+                Text("Cancel")
+            }
+
+            Button(
+                onClick = {
+                    if (taskName.isNotBlank()) {
+                        onConfirm(taskName)
+                        onDismiss()
+                    }
+                },
+                enabled = taskName.isNotBlank()
+            ) {
+                Text("Create Task")
+            }
         }
     }
 }
