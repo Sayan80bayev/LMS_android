@@ -21,7 +21,6 @@ import com.example.tutorial.data.local.entities.Person
 import com.example.tutorial.data.local.entities.Role
 import com.example.tutorial.data.repository.SchoolRepository
 import com.example.tutorial.presentation.screen.admin.AdminScreen
-import com.example.tutorial.presentation.screen.HomeScreen
 import com.example.tutorial.presentation.screen.admin.CourseAdminScreen
 import com.example.tutorial.presentation.screen.auth.LoginScreen
 import com.example.tutorial.presentation.screen.auth.RegisterScreen
@@ -75,9 +74,6 @@ fun MyApp() {
                     RegisterScreen(navController = navController)
                 }
 
-                composable("home"){
-                    HomeScreen()
-                }
                 composable("admin_screen") {
                     AdminScreen(navController)
                 }
@@ -86,23 +82,7 @@ fun MyApp() {
                     arguments = listOf(navArgument("courseId") { type = NavType.IntType })
                 ) { backStackEntry ->
                     val courseId = backStackEntry.arguments?.getInt("courseId") ?: -1
-
-                    // Заглушка для примера
-                    val fakeCourse = Course(
-                        id = courseId,
-                        name = "Курс #$courseId",
-                        teacherId = -1,
-                        isActive = false
-                    )
-
-                    val allUsers = listOf( // Заглушка для всех юзеров
-                        Person(1, "student1@mail.com", "Студент 1", "pass", Role.STUDENT),
-                        Person(2, "teacher1@mail.com", "Препод 1", "pass", Role.TEACHER),
-                        Person(3, "student2@mail.com", "Студент 2", "pass", Role.STUDENT),
-                        Person(3, "student3@mail.com", "Студент 3", "pass", Role.STUDENT)
-                    )
-
-                    CourseAdminScreen(course = fakeCourse, allPeople = allUsers)
+                    CourseAdminScreen(courseId, navController)
                 }
                 composable("teacher_screen") {
                     TeacherScreen(navController)

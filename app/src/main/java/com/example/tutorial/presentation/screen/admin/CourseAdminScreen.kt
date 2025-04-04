@@ -1,49 +1,63 @@
 package com.example.tutorial.presentation.screen.admin
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.tutorial.data.local.entities.Course
-import com.example.tutorial.data.local.entities.Person
-import com.example.tutorial.data.local.entities.Role
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.tutorial.presentation.components.SearchableDropdown
+import com.example.tutorial.presentation.viewmodel.AdminViewModel
+import com.example.tutorial.presentation.viewmodel.Factory
 
 @Composable
 fun CourseAdminScreen(
-    course: Course,
-    allPeople: List<Person> // список всех пользователей для добавления/удаления
+    courseId: Int,
+    navController: NavController? = null
 ) {
-    var courseName by remember { mutableStateOf(course.name) }
-    var isActive by remember { mutableStateOf(course.isActive) }
-    var selectedTeacherId by remember { mutableStateOf(course.teacherId) }
+    val context = LocalContext.current
+    val viewModel: AdminViewModel = viewModel(factory = Factory(context))
+    val courses by viewModel.courses.collectAsState()
+    val teachers by viewModel.teachers.collectAsState()
+    val students by viewModel.students.collectAsState()
+    val courseStudents by viewModel.courseStudents.collectAsState()
 
-    // Для примера: текущие студенты курса
-    var assignedStudents by remember { mutableStateOf<List<Person>>(emptyList()) }
+    // Find the current course
+    val course = remember(courses) { courses.find { it.id == courseId } }
 
-    val teachers = allPeople.filter { it.role == Role.TEACHER }
-    val students = allPeople.filter { it.role == Role.STUDENT }
+    // Local state
+    var courseName by remember { mutableStateOf(course?.name ?: "") }
+    var isActive by remember { mutableStateOf(course?.isActive ?: false) }
+    var selectedTeacherId by remember { mutableStateOf(course?.teacherId ?: -1) }
+    val assignedStudents = remember(courseStudents, students) {
+        students.filter { student -> courseStudents.contains(student.id) }
+    }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
+    // Load initial data
+    LaunchedEffect(Unit) {
+        viewModel.loadCourses()
+        viewModel.loadTeachers()
+        viewModel.loadStudents()
+        viewModel.loadStudentsInCourse(courseId)
+    }
 
+    // Update local state when course changes
+    LaunchedEffect(course) {
+        course?.let {
+            courseName = it.name
+            isActive = it.isActive
+            selectedTeacherId = it.teacherId
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         Text("Course Management", style = MaterialTheme.typography.titleLarge)
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -60,9 +74,11 @@ fun CourseAdminScreen(
             Text("Course is active")
             Switch(
                 checked = isActive,
-                onCheckedChange = {
-                    isActive = it
-                    activateCourseStub(course.id, isActive)
+                onCheckedChange = { active ->
+                    isActive = active
+                    course?.let {
+                        viewModel.activateCourse(it.id, active)
+                    }
                 },
                 modifier = Modifier.padding(start = 8.dp)
             )
@@ -70,73 +86,59 @@ fun CourseAdminScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Teacher
+        // Teacher selection
         SearchableDropdown(
             label = "Teacher",
             people = teachers,
             selectedPeople = teachers.filter { it.id == selectedTeacherId },
-            onSelect = {
-                selectedTeacherId = it.id
-                assignTeacherStub(course.id, it.id)
+            onSelect = { teacher ->
+                selectedTeacherId = teacher.id
+                course?.let {
+                    viewModel.assignTeacherToCourse(it.id, teacher.id)
+                }
             },
             onRemove = {
                 selectedTeacherId = -1
-                removeTeacherStub(course.id)
+                course?.let {
+                    viewModel.assignTeacherToCourse(it.id, -1)
+                }
             },
             singleSelect = true
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Students (multiple selection)
+        // Students selection
         SearchableDropdown(
             label = "Students",
             people = students,
             selectedPeople = assignedStudents,
-            onSelect = {
-                assignedStudents = assignedStudents + it // Add student to the list
-                assignStudentStub(course.id, it.id)
+            onSelect = { student ->
+                course?.let {
+                    viewModel.assignStudentToCourse(it.id, student.id)
+                }
             },
-            onRemove = {
-                assignedStudents = assignedStudents.filter { student -> student.id != it.id } // Remove student from the list
-                removeStudentStub(course.id, it.id)
+            onRemove = { student ->
+                course?.let {
+                    viewModel.removeStudentFromCourse(it.id, student.id)
+                }
             },
-            singleSelect = false // Allow multiple selection for students
+            singleSelect = false
         )
 
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
             onClick = {
-                updateCourseNameStub(course.id, courseName)
+                course?.let {
+                    val updatedCourse = it.copy(name = courseName)
+                    viewModel.updateCourse(updatedCourse)
+                    navController?.popBackStack()
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Save changes")
         }
     }
-}
-
-fun updateCourseNameStub(courseId: Int, newName: String) {
-    println("Changed course name [$courseId] → \"$newName\"")
-}
-
-fun activateCourseStub(courseId: Int, isActive: Boolean) {
-    println("Course [$courseId] ${if (isActive) "activated" else "deactivated"}")
-}
-
-fun assignTeacherStub(courseId: Int, teacherId: Int) {
-    println("Teacher [$teacherId] assigned to course [$courseId]")
-}
-
-fun removeTeacherStub(courseId: Int) {
-    println("Teacher removed from course [$courseId]")
-}
-
-fun assignStudentStub(courseId: Int, studentId: Int) {
-    println("Student [$studentId] added to course [$courseId]")
-}
-
-fun removeStudentStub(courseId: Int, studentId: Int) {
-    println("Student [$studentId] removed from course [$courseId]")
 }

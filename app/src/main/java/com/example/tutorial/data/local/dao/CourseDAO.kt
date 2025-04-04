@@ -8,7 +8,7 @@ import com.example.tutorial.data.local.entities.Course
 
 class CourseDAO(private val db: SQLiteDatabase) {
 
-    fun createCourse(name: String, teacherId: Int, isActive: Boolean = false): Long {
+    fun createCourse(name: String, teacherId: Int, isActive: Boolean = true): Long {
         val values = ContentValues().apply {
             put(AppDatabaseHelper.COLUMN_NAME, name)
             put(AppDatabaseHelper.COLUMN_TEACHER_ID, teacherId)
