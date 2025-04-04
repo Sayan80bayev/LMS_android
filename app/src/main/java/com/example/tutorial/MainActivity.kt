@@ -25,6 +25,9 @@ import com.example.tutorial.presentation.screen.HomeScreen
 import com.example.tutorial.presentation.screen.admin.CourseAdminScreen
 import com.example.tutorial.presentation.screen.auth.LoginScreen
 import com.example.tutorial.presentation.screen.auth.RegisterScreen
+import com.example.tutorial.presentation.screen.teacher.TeacherCourseScreen
+import com.example.tutorial.presentation.screen.teacher.TeacherScreen
+import com.example.tutorial.presentation.screen.teacher.TeacherTaskScreen
 
 class MainActivity : ComponentActivity() {
     private val repository by lazy { SchoolRepository.getInstance(this) }
@@ -98,6 +101,23 @@ fun MyApp() {
                     )
 
                     CourseAdminScreen(course = fakeCourse, allPeople = allUsers)
+                }
+                composable("teacher_screen") {
+                    TeacherScreen(navController)
+                }
+                composable("teacher_course_screen/{courseId}",
+                    arguments = listOf(navArgument("courseId") { type = NavType.IntType })
+                ) { backStackEntry ->
+                    val courseId = backStackEntry.arguments?.getInt("courseId") ?: -1
+                    TeacherCourseScreen(navController, courseId)
+                }
+                composable("teacher_task_screen/{courseId}/{taskId}",
+                    arguments = listOf(navArgument("courseId") { type = NavType.IntType },
+                        navArgument("taskId") { type = NavType.IntType })
+                ) { backStackEntry ->
+                    val courseId = backStackEntry.arguments?.getInt("courseId") ?: -1
+                    val taskId = backStackEntry.arguments?.getInt("taskId") ?: -1
+                    TeacherTaskScreen(navController, courseId, taskId)
                 }
             }
         }

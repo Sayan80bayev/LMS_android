@@ -4,6 +4,6 @@ data class Grade(
     val id: Int,
     val taskId: Int,
     val studentId: Int,
-    val value: Float,
+    val value: Float,//0 to 100
     val comments: String?
 )
