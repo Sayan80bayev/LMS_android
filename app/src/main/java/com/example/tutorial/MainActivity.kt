@@ -16,9 +16,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.tutorial.data.local.entities.Course
-import com.example.tutorial.data.local.entities.Person
-import com.example.tutorial.data.local.entities.Role
 import com.example.tutorial.data.repository.SchoolRepository
 import com.example.tutorial.presentation.screen.admin.AdminScreen
 import com.example.tutorial.presentation.screen.admin.CourseAdminScreen
@@ -48,28 +45,27 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MyApp() {
-    // Инициализируем навигационный контроллер
+
     val navController = rememberNavController()
 
-    // Scaffold — это контейнер, который помогает управлять основным UI
     Scaffold { paddingValues ->
-        // Используем Box для центрирования
+
         Box(
             modifier = Modifier
                 .padding(paddingValues)
-                .padding(16.dp) // Учитываем отступы
-                .fillMaxSize(), // Занимаем все доступное пространство
+                .padding(16.dp)
+                .fillMaxSize(),
         ) {
             NavHost(
                 navController = navController,
-                startDestination = "login", // Устанавливаем экран входа как начальный
-                modifier = Modifier.align(Alignment.Center) // Центрируем NavHost
+                startDestination = "login",
+                modifier = Modifier.align(Alignment.Center)
             ) {
-                // Навигация для экрана Login
+
                 composable("login") {
                     LoginScreen(navController)
                 }
-                // Навигация для экрана Register
+
                 composable("register") {
                     RegisterScreen(navController = navController)
                 }

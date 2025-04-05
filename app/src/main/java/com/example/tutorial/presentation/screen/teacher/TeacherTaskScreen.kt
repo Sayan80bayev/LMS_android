@@ -35,7 +35,6 @@ fun TeacherTaskScreen(navController: NavController, courseId: Int, taskId: Int) 
     var comments by remember { mutableStateOf("") }
     var showSheet by remember { mutableStateOf(false) }
 
-    // Load grades when screen appears
     LaunchedEffect(Unit) {
         viewModel.loadTaskGrades(taskId)
     }
@@ -50,7 +49,6 @@ fun TeacherTaskScreen(navController: NavController, courseId: Int, taskId: Int) 
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Search bar
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
@@ -61,7 +59,6 @@ fun TeacherTaskScreen(navController: NavController, courseId: Int, taskId: Int) 
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Students with grades
         LazyColumn(modifier = Modifier.fillMaxHeight(0.7f)) {
             items(grades) { grade ->
                 val student = students.find { it.id == grade.studentId }
@@ -79,7 +76,6 @@ fun TeacherTaskScreen(navController: NavController, courseId: Int, taskId: Int) 
                 }
             }
 
-            // Students without grades
             items(filteredStudents) { student ->
                 StudentItem(
                     student = student,
@@ -94,7 +90,6 @@ fun TeacherTaskScreen(navController: NavController, courseId: Int, taskId: Int) 
         }
     }
 
-    // Grade input sheet
     if (showSheet && selectedStudent != null) {
         ModalBottomSheet(
             onDismissRequest = { showSheet = false }

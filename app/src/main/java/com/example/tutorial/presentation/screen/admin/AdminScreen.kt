@@ -33,7 +33,6 @@ fun AdminScreen(navController: NavController) {
     val scope = rememberCoroutineScope()
     var showSheet by remember { mutableStateOf(false) }
 
-    // Load courses when the screen is first displayed
     LaunchedEffect(Unit) {
         viewModel.loadCourses()
     }

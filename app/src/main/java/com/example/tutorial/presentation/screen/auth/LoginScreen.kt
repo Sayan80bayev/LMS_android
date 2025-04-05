@@ -37,7 +37,6 @@ fun LoginScreen(navController: NavController, modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Email
         TextField(
             value = emailState.value,
             onValueChange = { emailState.value = it },
@@ -45,7 +44,6 @@ fun LoginScreen(navController: NavController, modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Password
         TextField(
             value = passwordState.value,
             onValueChange = { passwordState.value = it },
@@ -53,7 +51,6 @@ fun LoginScreen(navController: NavController, modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Login button
         Button(
             onClick = {
                 if (emailState.value.isBlank() || passwordState.value.isBlank()) {
@@ -83,7 +80,6 @@ fun LoginScreen(navController: NavController, modifier: Modifier = Modifier) {
             Text("Login")
         }
 
-        // Link to Register
         Text(
             text = buildAnnotatedString {
                 append("Don't have an account? ")

@@ -24,7 +24,6 @@ fun TeacherScreen(navController: NavController) {
     val viewModel: TeacherViewModel = viewModel(factory = TeacherViewModel.Companion.Factory(context))
     val courses by viewModel.courses.collectAsState()
 
-    // Load courses when screen appears
     LaunchedEffect(Unit) {
         viewModel.loadTeacherCourses(teacherId)
     }

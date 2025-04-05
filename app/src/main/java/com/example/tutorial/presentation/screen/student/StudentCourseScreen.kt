@@ -23,7 +23,6 @@ fun StudentCourseScreen(navController: NavController, courseId: Int) {
     val viewModel: StudentsViewModel = viewModel(factory = StudentsViewModel.Companion.Factory(context))
     val grades by viewModel.grades.collectAsState()
 
-    // Load tasks and grades when screen appears
     LaunchedEffect(Unit) {
         viewModel.loadStudentGrades(studentId, courseId)
     }

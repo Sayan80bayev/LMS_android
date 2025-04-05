@@ -10,36 +10,29 @@ class AppDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_N
         private const val DATABASE_NAME = "school_management.db"
         private const val DATABASE_VERSION = 1
 
-        // Table names
         const val TABLE_PERSONS = "persons"
         const val TABLE_COURSES = "courses"
         const val TABLE_TASKS = "tasks"
         const val TABLE_GRADES = "grades"
         const val TABLE_COURSE_STUDENTS = "course_students"
 
-        // Common column names
         const val COLUMN_ID = "id"
         const val COLUMN_NAME = "name"
 
-        // Persons table columns
         const val COLUMN_EMAIL = "email"
         const val COLUMN_PASSWORD = "password"
         const val COLUMN_ROLE = "role"
 
-        // Courses table columns
         const val COLUMN_TEACHER_ID = "teacher_id"
         const val COLUMN_IS_ACTIVE = "is_active"
 
-        // Tasks table columns
         const val COLUMN_COURSE_ID = "course_id"
 
-        // Grades table columns
         const val COLUMN_TASK_ID = "task_id"
         const val COLUMN_STUDENT_ID = "student_id"
         const val COLUMN_VALUE = "value"
         const val COLUMN_COMMENTS = "comments"
 
-        // Create tables SQL
         private const val CREATE_TABLE_PERSONS = """
             CREATE TABLE $TABLE_PERSONS (
                 $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,

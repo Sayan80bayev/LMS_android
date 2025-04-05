@@ -24,10 +24,8 @@ fun CourseAdminScreen(
     val students by viewModel.students.collectAsState()
     val courseStudents by viewModel.courseStudents.collectAsState()
 
-    // Find the current course
     val course = remember(courses) { courses.find { it.id == courseId } }
 
-    // Local state
     var courseName by remember { mutableStateOf(course?.name ?: "") }
     var isActive by remember { mutableStateOf(course?.isActive ?: false) }
     var selectedTeacherId by remember { mutableStateOf(course?.teacherId ?: -1) }
@@ -35,7 +33,6 @@ fun CourseAdminScreen(
         students.filter { student -> courseStudents.contains(student.id) }
     }
 
-    // Load initial data
     LaunchedEffect(Unit) {
         viewModel.loadCourses()
         viewModel.loadTeachers()
@@ -43,7 +40,6 @@ fun CourseAdminScreen(
         viewModel.loadStudentsInCourse(courseId)
     }
 
-    // Update local state when course changes
     LaunchedEffect(course) {
         course?.let {
             courseName = it.name
@@ -85,7 +81,6 @@ fun CourseAdminScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Teacher selection
         SearchableDropdown(
             label = "Teacher",
             people = teachers,
@@ -107,7 +102,6 @@ fun CourseAdminScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Students selection
         SearchableDropdown(
             label = "Students",
             people = students,

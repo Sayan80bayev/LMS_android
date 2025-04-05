@@ -27,7 +27,6 @@ fun TeacherCourseScreen(navController: NavController, courseId: Int) {
     var showSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
 
-    // Load tasks when screen appears
     LaunchedEffect(Unit) {
         viewModel.loadCourseTasks(courseId)
     }

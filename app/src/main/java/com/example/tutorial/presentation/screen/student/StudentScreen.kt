@@ -23,7 +23,6 @@ fun StudentScreen(navController: NavController) {
     val viewModel: StudentsViewModel = viewModel(factory = StudentsViewModel.Companion.Factory(context))
     val courses by viewModel.courses.collectAsState()
 
-    // Load courses when screen appears
     LaunchedEffect(Unit) {
         viewModel.loadStudentCourses(studentId)
     }
